@@ -15,10 +15,14 @@ struct ContentView: View {
     var body: some View {
         VStack {
             if isMediaOK == .authorized {
-                Text("Now playing \(stuff.songTitle) by \(stuff.author)")
-                    .onAppear {
-                        stuff.recordPlaying()
+                if !stuff.songTitle.isEmpty && !stuff.author.isEmpty {
+                    Text("Now playing \(stuff.songTitle) by \(stuff.author)").onAppear { stuff.recordPlaying()
                     }
+                } else {
+                    Text("Nothing is playing").onAppear { stuff.recordPlaying()
+                    }
+                }
+
             } else {
                 Text("Sorry you need to authorize use of Media player to work")
 
@@ -36,7 +40,8 @@ struct ContentView: View {
                 .buttonStyle(.borderedProminent)
             }
         }.onAppear {
-            isMediaOK = MPMediaLibrary.authorizationStatus()
+            guard isMediaOK == .authorized else { return print("USER IS NOT OK WITH MEDIA STOP RIGHT HERE")
+            }
         }
         .padding()
     }
@@ -50,15 +55,17 @@ struct ContentView: View {
 class MusicThings {
     var songTitle: String
     var author: String
+    let musicPlayer = MPMusicPlayerController.systemMusicPlayer
+
     func recordPlaying() {
-        let musicPlayer = MPMusicPlayerController.systemMusicPlayer
-        if let nowPlayingItem = musicPlayer.nowPlayingItem {
-            print(nowPlayingItem.title ?? "")
-            songTitle = nowPlayingItem.title ?? ""
-            author = nowPlayingItem.artist ?? ""
-        } else {
-            print("Nothing's playing")
-        }
+        print("Starting to listen")
+        
+        self.songTitle = self.musicPlayer.nowPlayingItem?.title ?? ""
+        
+        self.author = self.musicPlayer.nowPlayingItem?.artist ?? ""
+        
+        print("Starting to send notifications")
+        musicPlayer.beginGeneratingPlaybackNotifications()
     }
 
     init(songTitle: String, author: String) {
