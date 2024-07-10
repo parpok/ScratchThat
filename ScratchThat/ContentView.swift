@@ -9,61 +9,78 @@ import MediaPlayer
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isMediaOK = MPMediaLibrary.authorizationStatus()
-
     @State private var stuff = MusicThings(songTitle: "", author: "")
+    @State private var consent = mediaConsent()
     var body: some View {
         VStack {
-            if isMediaOK == .authorized {
+            switch consent.consent {
+            case .authorized:
                 if !stuff.songTitle.isEmpty && !stuff.author.isEmpty {
-                    Text("Now playing \(stuff.songTitle) by \(stuff.author)").onAppear { stuff.recordPlaying()
+                    Text("Now playing \(stuff.songTitle) by \(stuff.author)").onAppear {
+                        stuff.recordPlaying()
                     }
                 } else {
-                    Text("Nothing is playing").onAppear { stuff.recordPlaying()
+                    Text("Nothing is playing").onAppear {
+                        stuff.recordPlaying()
                     }
                 }
 
-            } else {
+            case .notDetermined:
+                Text("Welcome to ScratchThat").onAppear {
+                    consent.requestConsent()
+                }
+
+            case .denied:
                 Text("Sorry you need to authorize use of Media player to work")
 
                 Button(action: {
-                    Task {
-                        let status = await MPMediaLibrary.requestAuthorization()
-                        DispatchQueue.main.async {
-                            self.isMediaOK = status
-                        }
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
                     }
                 }) {
                     Text("Ask for permission")
                 }
                 .buttonBorderShape(.roundedRectangle)
                 .buttonStyle(.borderedProminent)
+            case .restricted:
+                Text("Sorry you need to authorize use of Media player to work")
+
+                Button(action: {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
+                    Text("Ask for permission")
+                }
+                .buttonBorderShape(.roundedRectangle)
+                .buttonStyle(.borderedProminent)
+            @unknown default:
+                fatalError("UNKNOWN AUTHORIZATION STATUS")
             }
-        }.onAppear {
-            guard isMediaOK == .authorized else { return print("USER IS NOT OK WITH MEDIA STOP RIGHT HERE")
-            }
+        }.padding().onChange(of: consent.consent){
+            print("UPDAATE UI")
         }
-        .padding()
     }
-}
+    }
 
 #Preview {
     ContentView()
 }
 
-@Observable
 class MusicThings {
     var songTitle: String
     var author: String
-    let musicPlayer = MPMusicPlayerController.systemMusicPlayer
+    let musicPlayer = MPMusicPlayerController.applicationMusicPlayer
 
     func recordPlaying() {
         print("Starting to listen")
-        
-        self.songTitle = self.musicPlayer.nowPlayingItem?.title ?? ""
-        
-        self.author = self.musicPlayer.nowPlayingItem?.artist ?? ""
-        
+
+        NotificationCenter.default.addObserver(forName: Notification.Name("MPMusicPlayerControllerNowPlayingItemDidChangeNotification"), object: musicPlayer, queue: .main) { _ in
+            let musicPlayer = self.musicPlayer
+            self.songTitle = (musicPlayer.nowPlayingItem?.title)!
+            self.author = (musicPlayer.nowPlayingItem?.artist)!
+            print("Now playing \(self.songTitle)")
+        }
         print("Starting to send notifications")
         musicPlayer.beginGeneratingPlaybackNotifications()
     }
@@ -71,5 +88,22 @@ class MusicThings {
     init(songTitle: String, author: String) {
         self.songTitle = songTitle
         self.author = author
+    }
+}
+
+class mediaConsent {
+    var consent = MPMediaLibrary.authorizationStatus()
+
+    init(consent: MPMediaLibraryAuthorizationStatus = MPMediaLibrary.authorizationStatus()) {
+        self.consent = consent
+    }
+
+    func requestConsent() {
+        Task {
+            let status = await MPMediaLibrary.requestAuthorization()
+            DispatchQueue.main.async {
+                self.consent = status
+            }
+        }
     }
 }
