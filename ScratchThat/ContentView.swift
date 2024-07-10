@@ -57,11 +57,11 @@ struct ContentView: View {
             @unknown default:
                 fatalError("UNKNOWN AUTHORIZATION STATUS")
             }
-        }.padding().onChange(of: consent.consent){
+        }.padding().onChange(of: consent.consent) {
             print("UPDAATE UI")
         }
     }
-    }
+}
 
 #Preview {
     ContentView()
@@ -91,6 +91,7 @@ class MusicThings {
     }
 }
 
+@Observable
 class mediaConsent {
     var consent = MPMediaLibrary.authorizationStatus()
 
