@@ -67,22 +67,24 @@ struct ContentView: View {
     ContentView()
 }
 
+@Observable
 class MusicThings {
     var songTitle: String
     var author: String
-    let musicPlayer = MPMusicPlayerController.applicationMusicPlayer
-
     func recordPlaying() {
-        print("Starting to listen")
-
-        NotificationCenter.default.addObserver(forName: Notification.Name("MPMusicPlayerControllerNowPlayingItemDidChangeNotification"), object: musicPlayer, queue: .main) { _ in
-            let musicPlayer = self.musicPlayer
-            self.songTitle = (musicPlayer.nowPlayingItem?.title)!
-            self.author = (musicPlayer.nowPlayingItem?.artist)!
-            print("Now playing \(self.songTitle)")
+        let musicPlayer = MPMusicPlayerController.systemMusicPlayer
+        if let nowPlayingItem = musicPlayer.nowPlayingItem {
+            songTitle = nowPlayingItem.title ?? ""
+            author = nowPlayingItem.artist ?? ""
+        } else {
+            print("Nothing is playing")
         }
-        print("Starting to send notifications")
-        musicPlayer.beginGeneratingPlaybackNotifications()
+
+//        NotificationCenter.default.addObserver(forName: NSNotification.Name.MPMusicPlayerControllerNowPlayingItemDidChange, object: nowPlayingItem, queue: .main) { _ in
+//            musicPlayer.beginGeneratingPlaybackNotifications()
+//            self.songTitle = nowPlayingItem?.title ?? ""
+//            self.author = nowPlayingItem?.artist ?? ""
+//        }
     }
 
     init(songTitle: String, author: String) {
