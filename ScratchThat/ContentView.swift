@@ -15,16 +15,44 @@ struct ContentView: View {
         VStack {
             switch consent.consent {
             case .authorized:
-                if !stuff.songTitle.isEmpty && !stuff.author.isEmpty {
-                    Text("Now playing \(stuff.songTitle) by \(stuff.author)").onAppear {
-                        stuff.recordPlaying()
-                    }
-                } else {
-                    Text("Nothing is playing").onAppear {
-                        stuff.recordPlaying()
-                    }
-                }
+                VStack {
+                    if !stuff.songTitle.isEmpty && !stuff.author.isEmpty {
+                        Text("Now playing \(stuff.songTitle) by \(stuff.author)")
 
+                        if stuff.trackingStatus == true {
+                            Button {
+                                stuff.stopRecording()
+                            } label: {
+                                Text("Stop recording playback")
+                            }.buttonStyle(.borderedProminent)
+                        } else {
+                            Button {
+                                stuff.recordPlaying()
+                                stuff.updateSong()
+                            } label: {
+                                Text("Re-start recording playback")
+                            }.buttonStyle(.borderedProminent)
+                        }
+                    } else {
+                        Text("Nothing is playing")
+
+                        Button {
+                            stuff.recordPlaying()
+                            stuff.updateSong()
+                        } label: {
+                            Text("Record playing")
+                        }.buttonStyle(.borderedProminent)
+
+                        Button {
+                            stuff.stopRecording()
+                        } label: {
+                            Text("Stop recording")
+                        }.buttonStyle(.borderedProminent)
+                    }
+                }.onAppear {
+                    stuff.recordPlaying()
+                    stuff.updateSong()
+                }
             case .notDetermined:
                 Text("Welcome to ScratchThat").onAppear {
                     consent.requestConsent()
@@ -71,21 +99,42 @@ struct ContentView: View {
 class MusicThings {
     var songTitle: String
     var author: String
+
+    var trackingStatus = true
+    let musicPlayer = MPMusicPlayerController.systemMusicPlayer
+
+    /// Make an Event Listener to listen to the event. But it wont work without getting the selected function running
     func recordPlaying() {
-        let musicPlayer = MPMusicPlayerController.systemMusicPlayer
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSong), name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
+        musicPlayer.beginGeneratingPlaybackNotifications()
+        print("Notifications should be set up")
+        trackingStatus = true
+    }
+
+    /// Run this gagatek and that Event listener up there will work
+    @objc func updateSong() {
         if let nowPlayingItem = musicPlayer.nowPlayingItem {
             songTitle = nowPlayingItem.title ?? ""
             author = nowPlayingItem.artist ?? ""
+            print("Playing \(songTitle)")
         } else {
             print("Nothing is playing")
         }
-
-//        NotificationCenter.default.addObserver(forName: NSNotification.Name.MPMusicPlayerControllerNowPlayingItemDidChange, object: nowPlayingItem, queue: .main) { _ in
-//            musicPlayer.beginGeneratingPlaybackNotifications()
-//            self.songTitle = nowPlayingItem?.title ?? ""
-//            self.author = nowPlayingItem?.artist ?? ""
-//        }
     }
+
+    // This cursed aah function that I had to trigger SO IT FUCKING WORKS AHDFSIJFHAIS
+
+    func stopRecording() {
+        NotificationCenter.default.removeObserver(self, name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
+        musicPlayer.endGeneratingPlaybackNotifications()
+        print("Rip notifications")
+        songTitle = ""
+        author = ""
+
+        trackingStatus = false
+    }
+
+    // this will be useful later
 
     init(songTitle: String, author: String) {
         self.songTitle = songTitle
