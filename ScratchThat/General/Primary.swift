@@ -19,33 +19,34 @@ struct MainScreen: View {
                     Button {
                         stuff.stopRecording()
                     } label: {
-                        Text("Stop recording playback")
+                        Text("Stop updating status")
                     }.buttonStyle(.borderedProminent)
                 } else {
                     Button {
                         stuff.recordPlaying()
                         stuff.updateSong()
                     } label: {
-                        Text("Re-start recording playback")
+                        Text("Restart updating status")
                     }.buttonStyle(.borderedProminent)
                 }
             } else {
                 if stuff.trackingStatus == true {
+                    Text("Updating status")
                     Text("Waiting for content")
                 } else {
-                    Text("Nothing is playing and tracing is off")
+                    Text("Nothing is playing and tracking is off")
                 }
                 Button {
                     stuff.recordPlaying()
                     stuff.updateSong()
                 } label: {
-                    Text("Record playing")
+                    Text("Start updating status")
                 }.buttonStyle(.borderedProminent)
 
                 Button {
                     stuff.stopRecording()
                 } label: {
-                    Text("Stop recording")
+                    Text("Stop updating status")
                 }.buttonStyle(.borderedProminent)
             }
         }.onAppear {
@@ -58,4 +59,3 @@ struct MainScreen: View {
 #Preview {
     HomeScreen()
 }
-
