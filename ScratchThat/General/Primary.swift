@@ -14,6 +14,8 @@ struct MainScreen: View {
         VStack {
             if !stuff.songTitle.isEmpty && !stuff.author.isEmpty {
                 Image(uiImage: (stuff.albumArt ?? UIImage(systemName: "music.note"))!)
+                    .resizable()
+                    .scaledToFit()
                 Text("Now playing \(stuff.songTitle) by \(stuff.author)")
 
                 if stuff.trackingStatus == true {

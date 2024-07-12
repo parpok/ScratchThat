@@ -27,7 +27,7 @@ class MusicTracking {
     /// Run this gagatek and that Event listener up there will work
     @objc func updateSong() {
         if let nowPlayingItem = musicPlayer.nowPlayingItem {
-            albumArt = (nowPlayingItem.artwork?.image(at: CGSize(width: 100, height: 100))) /*?? UIImage(systemName: "music.note")!*/
+            albumArt = (nowPlayingItem.artwork?.image(at: CGSize(width: 1000, height: 1000))) /* ?? UIImage(systemName: "music.note")! */
             // this SF Symbol for music note is only so when it compiles and the
             songTitle = nowPlayingItem.title ?? ""
             author = nowPlayingItem.artist ?? ""
@@ -43,6 +43,7 @@ class MusicTracking {
         musicPlayer.endGeneratingPlaybackNotifications()
         songTitle = ""
         author = ""
+        albumArt = UIImage()
 
         trackingStatus = false
     }
