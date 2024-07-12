@@ -12,7 +12,7 @@ struct ContentView: View {
     @State private var stuff = MusicTracking(albumArt: UIImage(systemName: "music.note")!, songTitle: "", author: "")
     @State private var consent = MediaConsent()
     var body: some View {
-        VStack {
+        NavigationStack {
             switch consent.consent {
             case .authorized:
                 HomeScreen()
