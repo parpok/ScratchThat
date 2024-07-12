@@ -8,9 +8,9 @@
 import Foundation
 import MediaPlayer
 
-
 @Observable
 class MusicTracking {
+    var albumArt: UIImage?
     var songTitle: String
     var author: String
 
@@ -27,6 +27,8 @@ class MusicTracking {
     /// Run this gagatek and that Event listener up there will work
     @objc func updateSong() {
         if let nowPlayingItem = musicPlayer.nowPlayingItem {
+            albumArt = (nowPlayingItem.artwork?.image(at: CGSize(width: 100, height: 100))) /*?? UIImage(systemName: "music.note")!*/
+            // this SF Symbol for music note is only so when it compiles and the
             songTitle = nowPlayingItem.title ?? ""
             author = nowPlayingItem.artist ?? ""
         } else {
@@ -47,8 +49,10 @@ class MusicTracking {
 
     // this will be useful later
 
-    init(songTitle: String, author: String) {
+    init(albumArt: UIImage, songTitle: String, author: String, trackingStatus: Bool = true) {
+        self.albumArt = albumArt
         self.songTitle = songTitle
         self.author = author
+        self.trackingStatus = trackingStatus
     }
 }

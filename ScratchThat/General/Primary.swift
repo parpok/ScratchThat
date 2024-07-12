@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct MainScreen: View {
-    @State private var stuff = MusicTracking(songTitle: "", author: "")
+    @State private var stuff = MusicTracking(albumArt: UIImage(systemName: "music.note")!, songTitle: "", author: "")
 
     var body: some View {
         VStack {
             if !stuff.songTitle.isEmpty && !stuff.author.isEmpty {
+                Image(uiImage: (stuff.albumArt ?? UIImage(systemName: "music.note"))!)
                 Text("Now playing \(stuff.songTitle) by \(stuff.author)")
 
                 if stuff.trackingStatus == true {

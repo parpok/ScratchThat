@@ -9,7 +9,7 @@ import MediaPlayer
 import SwiftUI
 
 struct ContentView: View {
-    @State private var stuff = MusicTracking(songTitle: "", author: "")
+    @State private var stuff = MusicTracking(albumArt: UIImage(systemName: "music.note")!, songTitle: "", author: "")
     @State private var consent = MediaConsent()
     var body: some View {
         VStack {
@@ -18,7 +18,6 @@ struct ContentView: View {
                 HomeScreen()
             case .notDetermined:
                 // Separate views breaks it unless the consent is bindable
-                
                 VStack {
                     Text("Welcome to ScratchThat")
                         .font(.title)
