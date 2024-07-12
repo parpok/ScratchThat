@@ -9,79 +9,41 @@ import MediaPlayer
 import SwiftUI
 
 struct ContentView: View {
-    @State private var stuff = MusicThings(songTitle: "", author: "")
-    @State private var consent = mediaConsent()
+    @State private var stuff = MusicTracking(songTitle: "", author: "")
+    @State private var consent = MediaConsent()
     var body: some View {
         VStack {
             switch consent.consent {
             case .authorized:
-                VStack {
-                    if !stuff.songTitle.isEmpty && !stuff.author.isEmpty {
-                        Text("Now playing \(stuff.songTitle) by \(stuff.author)")
-
-                        if stuff.trackingStatus == true {
-                            Button {
-                                stuff.stopRecording()
-                            } label: {
-                                Text("Stop recording playback")
-                            }.buttonStyle(.borderedProminent)
-                        } else {
-                            Button {
-                                stuff.recordPlaying()
-                                stuff.updateSong()
-                            } label: {
-                                Text("Re-start recording playback")
-                            }.buttonStyle(.borderedProminent)
-                        }
-                    } else {
-                        Text("Nothing is playing")
-
-                        Button {
-                            stuff.recordPlaying()
-                            stuff.updateSong()
-                        } label: {
-                            Text("Record playing")
-                        }.buttonStyle(.borderedProminent)
-
-                        Button {
-                            stuff.stopRecording()
-                        } label: {
-                            Text("Stop recording")
-                        }.buttonStyle(.borderedProminent)
-                    }
-                }.onAppear {
-                    stuff.recordPlaying()
-                    stuff.updateSong()
-                }
+                HomeScreen()
             case .notDetermined:
-                Text("Welcome to ScratchThat").onAppear {
-                    consent.requestConsent()
+                // Separate views breaks it unless the consent is bindable
+                
+                VStack {
+                    Text("Welcome to ScratchThat")
+                        .font(.title)
+                        .bold()
+
+                    Text("This app requires media usage. Please provide permission.")
+                        .multilineTextAlignment(.center)
+
+                    Button {
+                        consent.requestConsent()
+                    } label: {
+                        Label {
+                            Text("Provide permission")
+                        } icon: {
+                            Image(systemName: "checkmark")
+                        }
+                    }.buttonStyle(.borderedProminent)
+                }.padding().onAppear {
+                    consent.consent = MPMediaLibrary.authorizationStatus()
                 }
 
             case .denied:
-                Text("Sorry you need to authorize use of Media player to work")
-
-                Button(action: {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(url)
-                    }
-                }) {
-                    Text("Ask for permission")
-                }
-                .buttonBorderShape(.roundedRectangle)
-                .buttonStyle(.borderedProminent)
+                NotOKView()
             case .restricted:
-                Text("Sorry you need to authorize use of Media player to work")
-
-                Button(action: {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(url)
-                    }
-                }) {
-                    Text("Ask for permission")
-                }
-                .buttonBorderShape(.roundedRectangle)
-                .buttonStyle(.borderedProminent)
+                NotOKView()
             @unknown default:
                 fatalError("UNKNOWN AUTHORIZATION STATUS")
             }
@@ -95,67 +57,50 @@ struct ContentView: View {
     ContentView()
 }
 
-@Observable
-class MusicThings {
-    var songTitle: String
-    var author: String
+struct DescriptionPoint: View {
+    /// Name for the SF Symbol
+    var imgName: String
+    var title: String
+    var description: String
 
-    var trackingStatus = true
-    let musicPlayer = MPMusicPlayerController.systemMusicPlayer
-
-    /// Make an Event Listener to listen to the event. But it wont work without getting the selected function running
-    func recordPlaying() {
-        NotificationCenter.default.addObserver(self, selector: #selector(updateSong), name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
-        musicPlayer.beginGeneratingPlaybackNotifications()
-        print("Notifications should be set up")
-        trackingStatus = true
-    }
-
-    /// Run this gagatek and that Event listener up there will work
-    @objc func updateSong() {
-        if let nowPlayingItem = musicPlayer.nowPlayingItem {
-            songTitle = nowPlayingItem.title ?? ""
-            author = nowPlayingItem.artist ?? ""
-            print("Playing \(songTitle)")
-        } else {
-            print("Nothing is playing")
-        }
-    }
-
-    // This cursed aah function that I had to trigger SO IT FUCKING WORKS AHDFSIJFHAIS
-
-    func stopRecording() {
-        NotificationCenter.default.removeObserver(self, name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
-        musicPlayer.endGeneratingPlaybackNotifications()
-        print("Rip notifications")
-        songTitle = ""
-        author = ""
-
-        trackingStatus = false
-    }
-
-    // this will be useful later
-
-    init(songTitle: String, author: String) {
-        self.songTitle = songTitle
-        self.author = author
-    }
-}
-
-@Observable
-class mediaConsent {
-    var consent = MPMediaLibrary.authorizationStatus()
-
-    init(consent: MPMediaLibraryAuthorizationStatus = MPMediaLibrary.authorizationStatus()) {
-        self.consent = consent
-    }
-
-    func requestConsent() {
-        Task {
-            let status = await MPMediaLibrary.requestAuthorization()
-            DispatchQueue.main.async {
-                self.consent = status
+    @Environment(\.colorScheme) private var colorScheme
+    var body: some View {
+        VStack {
+            HStack {
+                Image(systemName: imgName)
+                    .symbolRenderingMode(.palette)
+                    .foregroundStyle(.accent, .primary)
+                    .font(.largeTitle)
+                    .padding(.trailing)
+                VStack {
+                    Text(title)
+                        .bold()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(description)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         }
     }
+}
+
+struct NotOKView: View {
+    var body: some View {
+        ContentUnavailableView("No media permission", systemImage: "exclamationmark.octagon.fill", description: Text("To use this app you need to provide media library permission"))
+
+        Button(action: {
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        }) {
+            Text("Provide permission in settings")
+        }
+        .buttonBorderShape(.roundedRectangle)
+        .buttonStyle(.borderedProminent)
+        .padding()
+    }
+}
+
+#Preview("Permission denied/Restricted") {
+    NotOKView()
 }
