@@ -29,6 +29,7 @@ class MusicTracking {
     }
 
     /// Run this gagatek and that Event listener up there will work
+    @MainActor
     @objc func updateSong() {
         if let nowPlayingItem = musicPlayer.nowPlayingItem {
             albumArt = (nowPlayingItem.artwork?.image(at: CGSize(width: 1000, height: 1000))) /* ?? UIImage(systemName: "music.note")! */
