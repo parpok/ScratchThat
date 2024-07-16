@@ -8,19 +8,29 @@
 import SwiftUI
 
 struct MainScreen: View {
-    @State private var stuff = MusicTracking(albumArt: UIImage(systemName: "music.note")!, songTitle: "", author: "")
+    @Environment(\.modelContext) private var ModelContext
+    @State private var stuff = MusicTracking(albumArt: UIImage(systemName: "music.note")!, songTitle: "", author: "", album: "")
 
     var body: some View {
         VStack {
             if !stuff.songTitle.isEmpty && !stuff.author.isEmpty {
-                Image(uiImage: (stuff.albumArt ?? UIImage(systemName: "music.note"))!)
-                    .resizable()
-                    .scaledToFit()
-                Text("Now playing \(stuff.songTitle) by \(stuff.author)")
-
+                VStack {
+                    Image(uiImage: (stuff.albumArt ?? UIImage(systemName: "music.note"))!)
+                        .resizable()
+                        .scaledToFit()
+                    Text("Now playing \(stuff.songTitle) by \(stuff.author)")
+                }.onChange(of: stuff.songTitle) {
+                    ModelContext.insert(TrackedSongs(id: UUID(), Title: stuff.songTitle, Artist: stuff.author, Album: stuff.albumName, AlbumART: stuff.albumArt?.pngData(), DateTracked: Date.now))
+                }
                 if stuff.trackingStatus == true {
                     Button {
                         stuff.stopRecording()
+                        
+//                        stuff.author = ""
+//                        stuff.songTitle = ""
+//                        stuff.albumName = ""
+//                        stuff.albumArt = UIImage(systemName: "music.note")
+                        
                     } label: {
                         Text("Stop updating status")
                     }.buttonStyle(.borderedProminent)

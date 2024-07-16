@@ -9,7 +9,7 @@ import MediaPlayer
 import SwiftUI
 
 struct ContentView: View {
-    @State private var stuff = MusicTracking(albumArt: UIImage(systemName: "music.note")!, songTitle: "", author: "")
+    @State private var stuff = MusicTracking(albumArt: UIImage(systemName: "music.note")!, songTitle: "", author: "", album: "")
     @State private var consent = MediaConsent()
     var body: some View {
         NavigationStack {

@@ -7,12 +7,14 @@
 
 import Foundation
 import MediaPlayer
+import SwiftData
 
 @Observable
 class MusicTracking {
     var albumArt: UIImage?
     var songTitle: String
     var author: String
+    var albumName: String
 
     var trackingStatus = true
     let musicPlayer = MPMusicPlayerController.systemMusicPlayer
@@ -31,6 +33,7 @@ class MusicTracking {
             // this SF Symbol for music note is only so when it compiles and the
             songTitle = nowPlayingItem.title ?? ""
             author = nowPlayingItem.artist ?? ""
+            albumName = nowPlayingItem.albumTitle ?? ""
         } else {
             print("Nothing is playing")
         }
@@ -50,10 +53,43 @@ class MusicTracking {
 
     // this will be useful later
 
-    init(albumArt: UIImage, songTitle: String, author: String, trackingStatus: Bool = true) {
+    init(albumArt: UIImage? = nil, songTitle: String, author: String, album: String, trackingStatus: Bool = true) {
         self.albumArt = albumArt
         self.songTitle = songTitle
         self.author = author
+        albumName = album
         self.trackingStatus = trackingStatus
     }
 }
+
+@Model
+class TrackedSongs{
+    @Attribute(.unique)
+    var id: UUID
+    var Title: String
+    var Artist: String
+    var Album: String
+
+    @Attribute(.externalStorage)
+    var AlbumART: Data?
+    
+    var DateTracked: Date
+
+    init(id: UUID, Title: String, Artist: String, Album: String, AlbumART: Data? = nil, DateTracked: Date) {
+        self.id = id
+        self.Title = Title
+        self.Artist = Artist
+        self.Album = Album
+        self.AlbumART = AlbumART
+        self.DateTracked = DateTracked
+    }
+}
+
+
+
+//    @Attribute(.externalStorage)
+//    var AlbumART: UIImage?
+//
+//        self.AlbumART = AlbumART
+
+/*AlbumART: UIImage? = nil,*/

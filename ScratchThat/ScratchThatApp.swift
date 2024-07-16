@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct ScratchThatApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-        }
+        }.modelContainer(for: TrackedSongs.self, isAutosaveEnabled: true)
     }
 }
