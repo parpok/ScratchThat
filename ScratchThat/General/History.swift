@@ -15,22 +15,20 @@ struct History: View {
             List {
                 ForEach(songs) { song in
                     HStack {
-                        if let albumArtData = song.AlbumART, let uiImage = UIImage(data: albumArtData) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFit()
-                        } else {
-                            Image(systemName: "music.note")
-                                .resizable()
-                                .scaledToFit()
-                        }
+                        Image(uiImage: UIImage(data: song.AlbumART ?? Data()) ?? UIImage(systemName: "music.note")!)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
                         Spacer()
-                        Text(song.Title)
-                        Text(song.Artist)
-                    }
+                        VStack {
+                            Text(song.Title).bold().font(.headline)
+                            Text(song.Artist)
+                            Text(song.Album)
+                        }
+                    }.frame(maxWidth: .infinity, maxHeight: 100)
                 }
-            }.navigationTitle("Listening history")
-        }.listStyle(.plain)
+            }
+        }
     }
 }
 

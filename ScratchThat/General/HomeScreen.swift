@@ -13,9 +13,10 @@ struct HomeScreen: View {
             MainScreen().tabItem {
                 Label("Home", systemImage: "house")
             }
-            History().tabItem {
-                Label("History", systemImage: "opticaldisc")
-            }
+            History()
+                .tabItem {
+                    Label("History", systemImage: "rectangle.stack.fill")
+                }
         }
     }
 }

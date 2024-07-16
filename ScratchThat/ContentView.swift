@@ -46,7 +46,7 @@ struct ContentView: View {
             @unknown default:
                 fatalError("UNKNOWN AUTHORIZATION STATUS")
             }
-        }.padding().onChange(of: consent.consent) {
+        }.onChange(of: consent.consent) {
             print("UPDAATE UI")
         }
     }
@@ -54,33 +54,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-}
-
-struct DescriptionPoint: View {
-    /// Name for the SF Symbol
-    var imgName: String
-    var title: String
-    var description: String
-
-    @Environment(\.colorScheme) private var colorScheme
-    var body: some View {
-        VStack {
-            HStack {
-                Image(systemName: imgName)
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.accent, .primary)
-                    .font(.largeTitle)
-                    .padding(.trailing)
-                VStack {
-                    Text(title)
-                        .bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(description)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
-        }
-    }
 }
 
 struct NotOKView: View {

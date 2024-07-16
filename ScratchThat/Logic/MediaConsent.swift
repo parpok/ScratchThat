@@ -16,6 +16,7 @@ class MediaConsent {
         self.consent = consent
     }
 
+    @MainActor
     func requestConsent() {
         Task {
             let status = await MPMediaLibrary.requestAuthorization()

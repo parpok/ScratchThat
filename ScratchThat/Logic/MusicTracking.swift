@@ -8,6 +8,7 @@
 import Foundation
 import MediaPlayer
 import SwiftData
+import OSLog
 
 @Observable
 class MusicTracking {
@@ -24,6 +25,7 @@ class MusicTracking {
         NotificationCenter.default.addObserver(self, selector: #selector(updateSong), name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
         musicPlayer.beginGeneratingPlaybackNotifications()
         trackingStatus = true
+        os_log("Recording media playback", type: .info)
     }
 
     /// Run this gagatek and that Event listener up there will work
@@ -34,25 +36,26 @@ class MusicTracking {
             songTitle = nowPlayingItem.title ?? ""
             author = nowPlayingItem.artist ?? ""
             albumName = nowPlayingItem.albumTitle ?? ""
+            
         } else {
-            print("Nothing is playing")
+            os_log(.error, "Nothing is playing right now")
         }
     }
 
     // This cursed aah function that I had to trigger SO IT FUCKING WORKS AHDFSIJFHAIS
-
     func stopRecording() {
         NotificationCenter.default.removeObserver(self, name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
         musicPlayer.endGeneratingPlaybackNotifications()
         songTitle = ""
         author = ""
-        albumArt = UIImage()
+        albumName = ""
+        albumArt = nil
 
         trackingStatus = false
+        
+        os_log("Stopped checking for playback notifications", type: .info)
     }
-
-    // this will be useful later
-
+    
     init(albumArt: UIImage? = nil, songTitle: String, author: String, album: String, trackingStatus: Bool = true) {
         self.albumArt = albumArt
         self.songTitle = songTitle
@@ -60,23 +63,24 @@ class MusicTracking {
         albumName = album
         self.trackingStatus = trackingStatus
     }
+
+    deinit {
+        stopRecording()
+    }
 }
 
 @Model
-class TrackedSongs{
-    @Attribute(.unique)
-    var id: UUID
+class TrackedSongs {
     var Title: String
     var Artist: String
     var Album: String
 
     @Attribute(.externalStorage)
     var AlbumART: Data?
-    
+
     var DateTracked: Date
 
-    init(id: UUID, Title: String, Artist: String, Album: String, AlbumART: Data? = nil, DateTracked: Date) {
-        self.id = id
+    init(Title: String, Artist: String, Album: String, AlbumART: Data? = nil, DateTracked: Date) {
         self.Title = Title
         self.Artist = Artist
         self.Album = Album
@@ -84,12 +88,3 @@ class TrackedSongs{
         self.DateTracked = DateTracked
     }
 }
-
-
-
-//    @Attribute(.externalStorage)
-//    var AlbumART: UIImage?
-//
-//        self.AlbumART = AlbumART
-
-/*AlbumART: UIImage? = nil,*/
