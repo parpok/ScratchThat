@@ -2,13 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>Get information about media thats now playing and share its status with others</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>audio</string>
-		<string>processing</string>
-		<string>fetch</string>
+		<string>xyz.parpok.ScratchThat.track</string>
+		<string>xyz.parpok.ScratchThat.pushToLFM</string>
+		<string>xyz.parpok.ScratchThat.pushToDSC</string>
 	</array>
 </dict>
 </plist>
