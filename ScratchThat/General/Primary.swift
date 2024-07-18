@@ -48,7 +48,6 @@ struct MainScreen: View {
             }.navigationTitle("Now playing")
         }
         .onAppear {
-            Music.recordPlaying()
             Music.updateSong()
         }
         .onChange(of: Music.songTitle) {

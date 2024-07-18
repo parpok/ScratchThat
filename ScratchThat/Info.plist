@@ -4,7 +4,6 @@
 <dict>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>xyz.parpok.ScratchThat.track</string>
 		<string>xyz.parpok.ScratchThat.pushToLFM</string>
 		<string>xyz.parpok.ScratchThat.pushToDSC</string>
 	</array>

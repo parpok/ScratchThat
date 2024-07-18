@@ -58,29 +58,6 @@ class MusicTracking {
         os_log("Stopped checking for playback notifications", type: .info)
     }
 
-    /// Register background task for tracking playback
-    func registerBGTaskTrack() {
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: "xyz.parpok.ScratchThat.track", using: .main) { _ in
-            // This will cause problems defo
-            DispatchQueue.main.async {
-                self.updateSong()
-            }
-        }
-    }
-
-    /// Run tracking every 3 minutes
-    func scheduleTrackRefresh() {
-        let request = BGAppRefreshTaskRequest(identifier: "xyz.parpok.ScratchThat.track")
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 3 * 60)
-
-        do {
-            try BGTaskScheduler.shared.submit(request)
-        } catch {
-            os_log("There's a problem with tracking", type: .error)
-            print(error.localizedDescription)
-        }
-    }
-
     /// Register background task for posting content
     func registerBGTaskPost() {
         BGTaskScheduler.shared.register(forTaskWithIdentifier: "xyz.parpok.ScratchThat.pushToLFM", using: .main) { _ in
@@ -98,8 +75,8 @@ class MusicTracking {
         self.author = author
         albumName = album
         self.trackingStatus = trackingStatus
-        
-        registerBGTaskTrack()
+
+        recordPlaying()
     }
 
     deinit {
