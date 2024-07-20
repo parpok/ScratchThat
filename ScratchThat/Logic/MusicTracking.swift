@@ -13,27 +13,26 @@ import SwiftData
 
 @Observable
 class MusicTracking {
-    var albumArt: UIImage?
-    var songTitle: String
-    var author: String
-    var albumName: String
-
     let musicPlayer = MPMusicPlayerController.systemMusicPlayer
+
+    var albumArt: UIImage? = MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.artwork?.image(at: CGSize(width: 100, height: 100))
+    var songTitle: String = MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.title ?? ""
+    var author: String = MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.artist ?? ""
+    var albumName: String = MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.albumTitle ?? ""
 
     /// Make an Event Listener to listen to the event. But it wont work without getting the selected function running.
     func recordPlaying() {
         musicPlayer.beginGeneratingPlaybackNotifications()
+
         NotificationCenter.default.addObserver(self, selector: #selector(updateSong), name: .MPMusicPlayerControllerNowPlayingItemDidChange, object: musicPlayer)
         os_log("Recording media playback", type: .info)
-
-        updateSong()
     }
 
     /// Run this gagatek and that Event listener for media content will work.
+    @MainActor
     @objc func updateSong() {
         if let nowPlayingItem = musicPlayer.nowPlayingItem {
-            albumArt = (nowPlayingItem.artwork?.image(at: CGSize(width: 100, height: 100))) /* ?? UIImage(systemName: "music.note")! */
-            // this SF Symbol for music note is only so when it compiles and the
+            albumArt = (nowPlayingItem.artwork?.image(at: CGSize(width: 100, height: 100)))
             songTitle = nowPlayingItem.title ?? ""
             author = nowPlayingItem.artist ?? ""
             albumName = nowPlayingItem.albumTitle ?? ""
@@ -67,12 +66,11 @@ class MusicTracking {
 //        }
 //    }
 
-    init(albumArt: UIImage? = nil, songTitle: String, author: String, album: String) {
+    init(albumArt: UIImage? = nil, songTitle: String, author: String, albumName: String) {
         self.albumArt = albumArt
         self.songTitle = songTitle
         self.author = author
-        albumName = album
-
+        self.albumName = albumName
         recordPlaying()
     }
 

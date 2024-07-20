@@ -6,13 +6,14 @@
 //
 
 import BackgroundTasks
+import MediaPlayer
 import OSLog
 import SwiftData
 import SwiftUI
 
 struct MainScreen: View {
     @Environment(\.modelContext) private var ModelContext
-    @State private var Music = MusicTracking(songTitle: "", author: "", album: "")
+    @State private var Music = MusicTracking(songTitle: MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.title ?? "", author: MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.artist ?? "", albumName: MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.albumTitle ?? "")
 
     var body: some View {
         NavigationStack {
@@ -50,6 +51,12 @@ struct MainScreen: View {
         }
         .onChange(of: Music.songTitle) {
             ModelContext.insert(TrackedSongs(Title: Music.songTitle, Artist: Music.author, Album: Music.albumName, AlbumART: Music.albumArt?.pngData(), DateTracked: Date.now))
+            
+            do{
+                try ModelContext.save()
+            } catch {
+                print(error.localizedDescription)
+            }
             os_log(.info, "Saving \(Music.songTitle) to the history")
         } // This should run in the background
     }
