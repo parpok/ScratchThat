@@ -9,7 +9,6 @@ import MediaPlayer
 import SwiftUI
 
 struct ContentView: View {
-    @State private var stuff = MusicTracking(albumArt: UIImage(systemName: "music.note")!, songTitle: "", author: "", album: "")
     @State private var consent = MediaConsent()
     var body: some View {
         NavigationStack {
@@ -23,7 +22,7 @@ struct ContentView: View {
                         .font(.title)
                         .bold()
 
-                    Text("This app requires media usage. Please provide permission.")
+                    Text("This app requires media usage to see what you're listening to. Please provide permission.")
                         .multilineTextAlignment(.center)
 
                     Button {
@@ -58,7 +57,7 @@ struct ContentView: View {
 
 struct NotOKView: View {
     var body: some View {
-        ContentUnavailableView("No media permission", systemImage: "exclamationmark.octagon.fill", description: Text("To use this app you need to provide media library permission"))
+        ContentUnavailableView("No media permission", systemImage: "exclamationmark.octagon.fill", description: Text("To use this app you need to provide media library permission so we can see what you're listening to."))
 
         Button(action: {
             if let url = URL(string: UIApplication.openSettingsURLString) {

@@ -20,5 +20,21 @@
             landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "50AA9A71-5818-4049-A062-134CC801A6EB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../var/folders/p3/86m122zx22g4w_v_qbbmblw00000gn/T/swift-generated-sources/@__swiftmacro_11ScratchThat0018Historyswift_jHJJcfMX26_0_33_EDA810A96A1BC767C8744BD383C79BD8Ll7PreviewfMf_.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1"
+            endingLineNumber = "1"
+            landmarkName = "$s11ScratchThat0018Historyswift_jHJJcfMX26_0_33_EDA810A96A1BC767C8744BD383C79BD8Ll7PreviewfMf_15PreviewRegistryfMu_"
+            landmarkType = "37">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

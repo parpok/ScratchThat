@@ -7,6 +7,7 @@
 
 import BackgroundTasks
 import OSLog
+import SwiftData
 import SwiftUI
 
 struct MainScreen: View {
@@ -47,14 +48,10 @@ struct MainScreen: View {
                 }
             }.navigationTitle("Now playing")
         }
-        .onAppear {
-            Music.updateSong()
-        }
         .onChange(of: Music.songTitle) {
             ModelContext.insert(TrackedSongs(Title: Music.songTitle, Artist: Music.author, Album: Music.albumName, AlbumART: Music.albumArt?.pngData(), DateTracked: Date.now))
             os_log(.info, "Saving \(Music.songTitle) to the history")
         } // This should run in the background
-        
     }
 }
 

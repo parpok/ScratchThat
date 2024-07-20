@@ -13,6 +13,6 @@ struct ScratchThatApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-        }.modelContainer(for: TrackedSongs.self, isAutosaveEnabled: true)
+        }.modelContainer(for: TrackedSongs.self)
     }
 }
