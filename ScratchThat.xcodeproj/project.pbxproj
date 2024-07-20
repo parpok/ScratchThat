@@ -29,6 +29,8 @@
 		8B56A7942C39F44F00861399 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8B56A7962C39F45000861399 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B56A7992C39F45000861399 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8BAF43562C4C7DB8006B6D10 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		8BAF43572C4C7F21006B6D10 /* License.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = License.txt; sourceTree = "<group>"; };
 		8BC0B0862C3E94FC0080C189 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -65,6 +67,8 @@
 		8B56A7862C39F44F00861399 = {
 			isa = PBXGroup;
 			children = (
+				8BAF43562C4C7DB8006B6D10 /* README.md */,
+				8BAF43572C4C7F21006B6D10 /* License.txt */,
 				8B56A7912C39F44F00861399 /* ScratchThat */,
 				8B56A7902C39F44F00861399 /* Products */,
 			);

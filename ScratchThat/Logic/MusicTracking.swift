@@ -5,7 +5,6 @@
 //  Created by Patryk Puciłowski on 12/07/2024.
 //
 
-import BackgroundTasks
 import Foundation
 import MediaPlayer
 import OSLog
@@ -54,17 +53,6 @@ class MusicTracking {
 
         os_log("Stopped checking for playback notifications", type: .info)
     }
-
-    /// Register background task for posting content
-//    func registerBGTaskPost() {
-//        BGTaskScheduler.shared.register(forTaskWithIdentifier: "xyz.parpok.ScratchThat.pushToLFM", using: .main) { _ in
-//            os_log("This should post to Last.fm on the background rn", type: .debug)
-//        }
-//
-//        BGTaskScheduler.shared.register(forTaskWithIdentifier: "xyz.parpok.ScratchThat.pushToDSC", using: .main) { _ in
-//            os_log("This should post to Discord in the background rn", type: .debug)
-//        }
-//    }
 
     init(albumArt: UIImage? = nil, songTitle: String, author: String, albumName: String) {
         self.albumArt = albumArt

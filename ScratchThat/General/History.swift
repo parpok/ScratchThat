@@ -20,7 +20,7 @@ struct History: View {
                             SongItem(songValues: song)
                         }
                     }
-                }
+                }.listStyle(.plain)
             }.navigationTitle("Listening history")
         }
     }
@@ -40,18 +40,15 @@ struct SongItem: View {
                 .scaledToFit()
                 .frame(width: 100, height: 100)
                 .border(.accent)
-                .background(.accent)
-            VStack {
-                Text(songValues.Title).bold().font(.title)
-                Spacer()
+            VStack(alignment: .leading) {
+                HStack {
+                    Text(songValues.Title).bold()
+                    Spacer()
+                    Text(formatTime(time: songValues.DateTracked)).fontDesign(.monospaced).foregroundStyle(.gray).font(.caption)
+                }
                 Text(songValues.Artist).foregroundStyle(.gray)
             }.multilineTextAlignment(.leading)
-            Spacer()
-            VStack {
-                Text(formatTime(time: songValues.DateTracked)).fontDesign(.monospaced).foregroundStyle(.gray).font(.caption)
-                Spacer()
-            }
-        }.frame(maxWidth: .infinity, maxHeight: 100).padding()
+        }.frame(maxWidth: .infinity, maxHeight: 100)
     }
 
     func formatTime(time: Date) -> String {

@@ -11,42 +11,37 @@ import SwiftUI
 struct ContentView: View {
     @State private var consent = MediaConsent()
     var body: some View {
-        NavigationStack {
-            switch consent.consent {
-            case .authorized:
-                HomeScreen()
-            case .notDetermined:
-                // Separate views breaks it unless the consent is bindable
-                VStack {
-                    Text("Welcome to ScratchThat")
-                        .font(.title)
-                        .bold()
+        switch consent.consent {
+        case .authorized:
+            HomeScreen()
+        case .notDetermined:
+            VStack {
+                Text("Welcome to ScratchThat")
+                    .font(.title)
+                    .bold()
 
-                    Text("This app requires media usage to see what you're listening to. Please provide permission.")
-                        .multilineTextAlignment(.center)
+                Text("This app requires media usage to see what you're listening to. Please provide permission.")
+                    .multilineTextAlignment(.center)
 
-                    Button {
-                        consent.requestConsent()
-                    } label: {
-                        Label {
-                            Text("Provide permission")
-                        } icon: {
-                            Image(systemName: "checkmark")
-                        }
-                    }.buttonStyle(.borderedProminent)
-                }.padding().onAppear {
-                    consent.consent = MPMediaLibrary.authorizationStatus()
-                }
-
-            case .denied:
-                NotOKView()
-            case .restricted:
-                NotOKView()
-            @unknown default:
-                fatalError("UNKNOWN AUTHORIZATION STATUS")
+                Button {
+                    consent.requestConsent()
+                } label: {
+                    Label {
+                        Text("Provide permission")
+                    } icon: {
+                        Image(systemName: "checkmark")
+                    }
+                }.buttonStyle(.borderedProminent)
+            }.padding().onAppear {
+                consent.consent = MPMediaLibrary.authorizationStatus()
             }
-        }.onChange(of: consent.consent) {
-            print("UPDAATE UI")
+
+        case .denied:
+            NotOKView()
+        case .restricted:
+            NotOKView()
+        @unknown default:
+            fatalError("UNKNOWN AUTHORIZATION STATUS")
         }
     }
 }

@@ -47,7 +47,7 @@ struct MainScreen: View {
                         .frame(width: 100, height: 100)
                     Text("Nothing is playing right now")
                 }
-            }.navigationTitle("Now playing")
+            }.navigationTitle("Now playing").navigationBarTitleDisplayMode(.large)
         }
         .onChange(of: Music.songTitle) {
             ModelContext.insert(TrackedSongs(Title: Music.songTitle, Artist: Music.author, Album: Music.albumName, AlbumART: Music.albumArt?.pngData(), DateTracked: Date.now))
