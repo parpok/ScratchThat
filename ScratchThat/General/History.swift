@@ -32,6 +32,9 @@ struct History: View {
 
 struct SongItem: View {
     var songValues: TrackedSongs
+
+    @State private var time: String = ""
+    
     var body: some View {
         HStack {
             Image(uiImage: UIImage(data: songValues.AlbumART ?? Data()) ?? UIImage(systemName: "music.note")!)
@@ -44,11 +47,17 @@ struct SongItem: View {
                 HStack {
                     Text(songValues.Title).bold()
                     Spacer()
-                    Text(formatTime(time: songValues.DateTracked)).fontDesign(.monospaced).foregroundStyle(.gray).font(.caption)
+                    Text(time).fontDesign(.monospaced).foregroundStyle(.gray).font(.caption)
                 }
                 Text(songValues.Artist).foregroundStyle(.gray)
             }.multilineTextAlignment(.leading)
-        }.frame(maxWidth: .infinity, maxHeight: 100)
+        }.frame(maxWidth: .infinity, maxHeight: 100).onTapGesture {
+            time = formatTime(time: songValues.DateTracked)
+        }.onAppear{
+            time = formatTime(time: songValues.DateTracked)
+        }
+        // its cary to update date like that
+        // ofc debug is having hangs
     }
 
     func formatTime(time: Date) -> String {
