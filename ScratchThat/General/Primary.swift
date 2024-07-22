@@ -5,15 +5,13 @@
 //  Created by Patryk Puciłowski on 12/07/2024.
 //
 
-import BackgroundTasks
-import MediaPlayer
 import OSLog
 import SwiftData
 import SwiftUI
 
 struct MainScreen: View {
     @Environment(\.modelContext) private var ModelContext
-    @State private var Music = MusicTracking(songTitle: MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.title ?? "", author: MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.artist ?? "", albumName: MPMusicPlayerController.systemMusicPlayer.nowPlayingItem?.albumTitle ?? "")
+    @State private var Music = MusicTracking(songTitle: "", author: "", albumName:  "")
 
     var body: some View {
         NavigationStack {
@@ -24,13 +22,13 @@ struct MainScreen: View {
                         Image(uiImage: albumART)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 100, height: 100)
+                            .frame(width: 150, height: 150)
                     } else {
                         Image(systemName: "music.note")
                             .resizable()
                             .font(.largeTitle)
                             .scaledToFit()
-                            .frame(width: 100, height: 100)
+                            .frame(width: 150, height: 150)
                     }
 
                     Text(Music.songTitle)
